@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import HeadphoneImg from './assets/images/listening-to-music-bg.jpg'
 import Spotify from 'spotify-web-api-js';
 
 
@@ -12,11 +13,15 @@ class App extends Component {
         /*Getting params from URL*/
         const params = this.getHashParam();
         this.state = {
+            params: params,
+            moodBgColor: '#9c6e7f',
             /*if access token is true that logged in state*/
             loggedIn: !!params.access_token,
             nowPlaying: {
-                name: 'Not Checked',
-                image: '',
+                trackName: '',
+                artistName: '',
+                image: HeadphoneImg,
+                rating: ''
             }
         }
         /*if there is access token available then we can set the access token within spotify web api
@@ -38,33 +43,79 @@ class App extends Component {
         return hashParams;
     }
 
+    componentWillMount() {
+        this.getNowPlaying();
+        this.changeMoodBgColor = setInterval(() => this.getRandomColor(), 10000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.changeMoodBgColor)
+    }
+
+    getRandomColor() {
+        let length = 6;
+        let chars = '0123456789ABCDEF';
+        let hex = '#';
+        while(length--) hex += chars[(Math.random() * 16) | 0];
+        this.setState({
+            moodBgColor: hex
+        })
+    }
+
     getNowPlaying() {
-        /**/
-        spotifyWebApi.getMyCurrentPlaybackState()
-            .then((response) => {
-                console.log(response)
-                this.setState({
-                    nowPlaying: {
-                        name: response.item.name,
-                        image: response.item.album.images[0].url
-                    }
+        if(this.state.loggedIn) {
+            spotifyWebApi.getMyCurrentPlaybackState()
+                .then((response) => {
+                    let isPlayingSomething = response !== ""
+                    this.setState({
+                        nowPlaying: {
+                            trackName: isPlayingSomething ? response.item.name : "No track Playing",
+                            artistName: isPlayingSomething ? response.item.artists[0].name : "",
+                            image: isPlayingSomething ? response.item.album.images[1].url : "",
+                            popularity: isPlayingSomething ? response.item.popularity : ""
+                        }
+                    })
                 })
-            })
+        }
     }
 
     render() {
         return (
-            <div className="App">
-                <a href="http://localhost:8888">
-                    <button>Login with Spotify</button>
-                </a>
-                <div>Now Playing { this.state.nowPlaying.name }</div>
-                <div>
-                    <img src={this.state.nowPlaying.image} style={{width: 100}} />
+            <div className="App" style={{backgroundColor: this.state.moodBgColor}}>
+                <div className="shadow-overlay"></div>
+                <div className="on-top">
+                    <div className='playlist-background'
+                         style={{backgroundImage: 'url('+ this.state.nowPlaying.image +')'}}>
+                        {this.state.params.access_token && (
+                            <div>
+                                <div className="track-artist-container">
+                                    <h2 className="text-white">
+                                        Track Currently Playing: {this.state.nowPlaying.trackName}
+                                    </h2>
+                                    <h3 className="text-white">{this.state.nowPlaying.artistName}</h3>
+                                </div>
+                                <div className="rating">
+                                    <h3 className="text-white">Popularity: {this.state.nowPlaying.popularity}</h3>
+                                    <div className="rating-circle"></div>
+                                </div>
+
+                                <button className="check-song-button" onClick={() => this.getNowPlaying() }>
+                                    Check Song Now Playing
+                                </button>
+
+                            </div>
+                        )}
+
+                        {!this.state.params.access_token && (
+                            <a className="login-link" href="http://localhost:8888">
+                                <strong>
+                                    <h1>Login with Spotify</h1>
+                                </strong>
+                            </a>
+                        )}
+
+                    </div>
                 </div>
-                <button onClick={() => this.getNowPlaying() }>
-                    Check Now Playing
-                </button>
             </div>
         );
   }
