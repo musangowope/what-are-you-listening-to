@@ -18,11 +18,15 @@ setting. Back in the project details page take down your client ID, client secre
 `http://localhost:8888/callback` in note(Any document, we will be using this in our code for the server)
 
 ###Setting the details (Client ID, Client Secret and callback URI). Running the client and server.
+
 4) From the root of this project, in your terminal, cd into `client` and run `npm install`. 
 CD into `auth-server` and do the same
+
 5) In `auth-server/authorization_code/app.js` set the `client_id` variable to the client id which you 
 took down. Do the same for `client_secret` and for the `redirect_uri` use the following `http://localhost:8888/callback`
+
 6) **Running the client:** cd into `client` and run `yarn start` or `npm run dev`
+
 7) **Running the Server:**  from the root, in your terminal run `node auth-server/authorization_code/app.js`
 
 Then play a song on your spotify. 
