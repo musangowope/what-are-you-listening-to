@@ -18,7 +18,7 @@ Click on `Edit Settings` and set the `Redirect URIs` to `http://localhost:8888/c
 setting. Back in the project details page take down your client ID, client secret as well as the 
 `http://localhost:8888/callback` in note(Any document, we will be using this in our code for the server)
 
-###Setting the details (Client ID, Client Secret and callback URI). Running the client and server.
+### Setting the details (Client ID, Client Secret and callback URI). Running the client and server.
 
 4) From the root of this project, in your terminal, cd into `client` and run `npm install`. 
 CD into `auth-server` and do the same
