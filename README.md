@@ -1,6 +1,7 @@
-##Quick Startup:
+## Quick Startup:
 
-###Creating Spotify App and getting your Client ID and client secret
+### Creating Spotify App and getting your Client ID and client secret
+
 The following is just quick instructions to application. 
 During the demo I will actually explain how to set everything up
 
