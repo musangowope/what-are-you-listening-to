@@ -26,7 +26,7 @@ CD into `auth-server` and do the same
 5) In `auth-server/authorization_code/app.js` set the `client_id` variable to the client id which you 
 took down. Do the same for `client_secret` and for the `redirect_uri` use the following `http://localhost:8888/callback`
 
-6) **Running the client:** cd into `client` and run `yarn start` or `npm run dev`
+6) **Running the client:** cd into `client` and run `yarn start` or `npm run start`
 
 7) **Running the Server:**  from the root, in your terminal run `node auth-server/authorization_code/app.js`
 
