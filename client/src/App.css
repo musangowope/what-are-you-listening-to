@@ -7,12 +7,30 @@ body {
   color: white;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
+.ripple {
+  background-position: center;
+  transition: background 0.8s;
+}
+.ripple:hover {
+  background: rgba(255, 255, 255, 0.31) radial-gradient(circle, transparent 1%, rgba(255, 255, 255, 0.31) 1%) center/15000%;
+}
+.ripple:active {
+  background-color: rgba(255, 255, 255, 0.31);
+  background-size: 100%;
+  transition: background 0s;
+}
+
 .App {
   text-align: center;
   position: relative;
   height: 100vh;
   transition: 0.3s ease-in;
 }
+
 
 .App .shadow-overlay {
   height: 100%;
@@ -33,6 +51,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   height: 100%;
 }
 
@@ -40,6 +59,40 @@ body {
   text-decoration: none;
   color: white;
 
+}
+
+.App .navbar {
+  position: absolute;
+  top: 10px;
+}
+
+.App .flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.App .show-demo {
+  display:flex !important;
+}
+
+.App .hide-demo {
+  display:none !important;
+}
+
+.App .flex-container .flex-item {
+  flex-flow: row;
+  flex: 1;
+  align-items: center;
+  /*justify-content: space-between;*/
+}
+
+.App .flex-container .tutorial-btn {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.22);
+  border-radius: 10px;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.17);
+  border: none;
 }
 
 
@@ -53,9 +106,6 @@ body {
   border-radius: 50px;
   margin-left: auto;
   margin-right: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-repeat: no-repeat;
   background-blend-mode: multiply;
   box-shadow: 5px 5px 33px black;
@@ -63,14 +113,14 @@ body {
   border: solid 2px #ffbc6d;
 }
 
-.App .playlist-background .track-artist-container {
+.App  .playlist-background .track-artist-container {
   position: absolute;
   top: 10px;
   left: 10px;
   text-align: left;
 }
 
-.rating {
+.App .rating {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -82,7 +132,7 @@ body {
   left: -20px;
 }
 
-.rating .rating-circle {
+ .rating .rating-circle {
   height: 20px;
   width: 20px;
   border-radius: 50%;

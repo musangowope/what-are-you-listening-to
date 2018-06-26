@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import HeadphoneImg from './assets/images/listening-to-music-bg.jpg'
 import Spotify from 'spotify-web-api-js';
+import axios from 'axios'
 
 
 /*Because its a class then we have to instantiate it */
@@ -22,7 +23,8 @@ class App extends Component {
                 artistName: '',
                 image: HeadphoneImg,
                 rating: ''
-            }
+            },
+            demoTab: "listen"
         }
         /*if there is access token available then we can set the access token within spotify web api
         * Convenient because we dont have to add the acccess token everytime we make a request
@@ -79,12 +81,53 @@ class App extends Component {
         }
     }
 
+    goToDemo(demo) {
+        this.setState({
+            demoTab: demo
+        })
+    }
+
+    getUserInformation() {
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + this.getHashParam().access_token
+            }
+        }
+        axios.get('https://api.spotify.com/v1/me',config)
+            .then(function(response){
+                console.log(response.data); // ex.: { user: 'Your User'}
+                console.log(response.status); // ex.: 200
+            });
+    }
+
     render() {
         return (
             <div className="App" style={{backgroundColor: this.state.moodBgColor}}>
                 <div className="shadow-overlay"></div>
                 <div className="on-top">
-                    <div className='playlist-background'
+                    <div className='flex-container navbar uppercase'>
+                        <div className='flex-item'>
+                            <button onClick={() => this.goToDemo('listen')} className="tutorial-btn ripple">
+                                <h2 className="uppercase text-white">What are you listening to demo</h2>
+                            </button>
+                        </div>
+                        <div className='flex-item'>
+                            <button onClick={() => this.goToDemo('profile')} className="tutorial-btn ripple">
+                                <h2 className="uppercase text-white">
+                                    Get Profile Details Demo
+                                </h2>
+                            </button>
+                        </div>
+                        <div className='flex-item'>
+                            <button onClick={() => this.goToDemo('profile')} className="tutorial-btn ripple">
+                                <h2 className='uppercase text-white'>
+                                    Search Track Demo
+                                </h2>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className={`playlist-background flex-container ${this.state.demoTab === 'listen' ? 'show-demo' : 'hide-demo'}`}
                          style={{backgroundImage: 'url('+ this.state.nowPlaying.image +')'}}>
                         {this.state.params.access_token && (
                             <div>
@@ -115,6 +158,15 @@ class App extends Component {
                         )}
 
                     </div>
+
+                    <div className={`flex-container ${this.state.demoTab === 'profile' ? 'show-demo' : 'hide-demo'}`}>
+                        <button onClick={() => this.getUserInformation()}>Get Profile Data</button>
+                    </div>
+
+                    <div className={`flex-container ${this.state.demoTab === 'search' ? 'show-demo' : 'hide-demo'}`}>
+                        <h2>Search Track Demo</h2>
+                    </div>
+
                 </div>
             </div>
         );
