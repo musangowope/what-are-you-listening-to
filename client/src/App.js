@@ -24,6 +24,12 @@ class App extends Component {
                 image: HeadphoneImg,
                 rating: ''
             },
+            profile: {
+                fullName: '',
+                profilePicture: '',
+                followers: '',
+                email: ''
+            },
             demoTab: "listen"
         }
         /*if there is access token available then we can set the access token within spotify web api
@@ -85,6 +91,9 @@ class App extends Component {
         this.setState({
             demoTab: demo
         })
+        if (demo === "profile") {
+            this.getUserInformation();
+        }
     }
 
     getUserInformation() {
@@ -92,13 +101,27 @@ class App extends Component {
             headers: {
                 'Authorization': 'Bearer ' + this.getHashParam().access_token
             }
-        }
+        };
         axios.get('https://api.spotify.com/v1/me',config)
-            .then(function(response){
-                console.log(response.data); // ex.: { user: 'Your User'}
-                console.log(response.status); // ex.: 200
+            .then(res => {
+                console.log(res);
+                this.setState({
+                    profile: {
+                        fullName: res.data.display_name,
+                        profilePicture: res.data.images[0].url,
+                        followers: res.data.followers.total,
+                        email: res.data.email
+                    }
+                })
+
             });
     }
+
+    // setUserInformation() {
+    //     let user = this.getUserInformation();
+    //     console.log('user', user)
+    //
+    // }
 
     render() {
         return (
@@ -159,9 +182,17 @@ class App extends Component {
 
                     </div>
 
-                    <div className={`flex-container ${this.state.demoTab === 'profile' ? 'show-demo' : 'hide-demo'}`}>
-                        <button onClick={() => this.getUserInformation()}>Get Profile Data</button>
-                    </div>
+                    <section className={`flex-container profile-section ${this.state.demoTab === 'profile' ? 'show-demo' : 'hide-demo'}`}>
+                        <div>
+                            <div className="profile-picture"
+                                 style={{backgroundImage: 'url('+ this.state.profile.profilePicture +')'}}
+                            />
+                            <h3 className="text-white">
+                                <strong>Full Name:</strong> { this.state.profile.fullName }</h3>
+                            <h3 className="text-white"><strong>Email Address:</strong> { this.state.profile.email} </h3>
+                        </div>
+                    </section>
+
 
                     <div className={`flex-container ${this.state.demoTab === 'search' ? 'show-demo' : 'hide-demo'}`}>
                         <h2>Search Track Demo</h2>

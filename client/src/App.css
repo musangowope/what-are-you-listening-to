@@ -81,7 +81,7 @@ body {
 }
 
 .App .flex-container .flex-item {
-  flex-flow: row;
+  flex-direction: row;
   flex: 1;
   align-items: center;
   /*justify-content: space-between;*/
@@ -120,19 +120,19 @@ body {
   text-align: left;
 }
 
-.App .rating {
+.App .playlist-background .rating {
   position: absolute;
   top: 20px;
   right: 20px;
   display: flex;
 }
 
-.rating h3 {
+.App .playlist-background .rating h3 {
   position: relative;
   left: -20px;
 }
 
- .rating .rating-circle {
+ .App .playlist-background .rating .rating-circle {
   height: 20px;
   width: 20px;
   border-radius: 50%;
@@ -145,7 +145,7 @@ body {
   margin-top: 17px;
 }
 
-.check-song-button {
+.App .playlist-background .check-song-button {
   position: absolute;
   bottom: 40px;
   right: 40px;
@@ -162,3 +162,19 @@ body {
 @-moz-keyframes rating-circle-pulse {to {box-shadow: 0 0 0 8px rgba(255, 188, 109, 0.83);}}
 @-ms-keyframes rating-circle-pulse {to {box-shadow: 0 0 0 8px rgba(255, 188, 109, 0.83);}}
 @keyframes rating-circle-pulse {to {box-shadow: 0 0 0 8px rgba(255, 188, 109, 0.83);}}
+
+
+/*profile section*/
+
+.App .profile-section .profile-picture {
+  background-color: gray;
+  border: solid 2px #ffbc6d;
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+  background-position: center;
+  background-size: cover;
+}
