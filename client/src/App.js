@@ -30,7 +30,13 @@ class App extends Component {
                 followers: '',
                 email: ''
             },
-            demoTab: "listen"
+            demoTab: "listen",
+            track: {
+                name: 'Change',
+                artists: [],
+                trackImage: null
+            }
+
         }
         /*if there is access token available then we can set the access token within spotify web api
         * Convenient because we dont have to add the acccess token everytime we make a request
@@ -79,7 +85,7 @@ class App extends Component {
                         nowPlaying: {
                             trackName: isPlayingSomething ? response.item.name : "No track Playing",
                             artistName: isPlayingSomething ? response.item.artists[0].name : "",
-                            image: isPlayingSomething ? response.item.album.images[1].url : "",
+                            image: isPlayingSomething ? response.item.album.images[0].url : "",
                             popularity: isPlayingSomething ? response.item.popularity : ""
                         }
                     })
@@ -94,6 +100,7 @@ class App extends Component {
         if (demo === "profile") {
             this.getUserInformation();
         }
+
     }
 
     getUserInformation() {
@@ -113,7 +120,6 @@ class App extends Component {
                         email: res.data.email
                     }
                 })
-
             });
     }
 
@@ -122,6 +128,30 @@ class App extends Component {
     //     console.log('user', user)
     //
     // }
+
+    handleChange = (query) => {
+        this.searchTrack(query);
+    }
+
+    searchTrack(query) {
+        const q = query
+        let config = {
+            headers: {
+                'Authorization': 'Bearer ' + this.getHashParam().access_token
+            }
+        };
+        axios.get('https://api.spotify.com/v1/search?q='+ q + '&type=track&limit=1',config)
+            .then(res => {
+                console.log(res.data.tracks.items[0].name);
+                this.setState({
+                    track: {
+                        name: res.data.tracks.items[0].name,
+                        // artists: res.data.tracks.items[0].artists,
+                        trackImage: res.data.tracks.items[0].album.images[0].url
+                    }
+                })
+            });
+    }
 
     render() {
         return (
@@ -142,7 +172,7 @@ class App extends Component {
                             </button>
                         </div>
                         <div className='flex-item'>
-                            <button onClick={() => this.goToDemo('profile')} className="tutorial-btn ripple">
+                            <button onClick={() => this.goToDemo('search')} className="tutorial-btn ripple">
                                 <h2 className='uppercase text-white'>
                                     Search Track Demo
                                 </h2>
@@ -150,7 +180,7 @@ class App extends Component {
                         </div>
                     </div>
 
-                    <div className={`playlist-background flex-container ${this.state.demoTab === 'listen' ? 'show-demo' : 'hide-demo'}`}
+                    <div className={`playlist-background flex-container animated fadeInLeft ${this.state.demoTab === 'listen' ? 'show-demo' : 'hide-demo'}`}
                          style={{backgroundImage: 'url('+ this.state.nowPlaying.image +')'}}>
                         {this.state.params.access_token && (
                             <div>
@@ -183,7 +213,7 @@ class App extends Component {
                     </div>
 
                     <section className={`flex-container profile-section ${this.state.demoTab === 'profile' ? 'show-demo' : 'hide-demo'}`}>
-                        <div>
+                        <div className="animated fadeInLeft">
                             <div className="profile-picture"
                                  style={{backgroundImage: 'url('+ this.state.profile.profilePicture +')'}}
                             />
@@ -194,9 +224,20 @@ class App extends Component {
                     </section>
 
 
-                    <div className={`flex-container ${this.state.demoTab === 'search' ? 'show-demo' : 'hide-demo'}`}>
-                        <h2>Search Track Demo</h2>
-                    </div>
+                    <section className={`flex-container search-section ${this.state.demoTab === 'search' ? 'show-demo' : 'hide-demo'}`}>
+                        <div className="animated fadeInLeft">
+                            <h3 className="text-white">Type a track name</h3>
+                            <input className="search-track-input" onChange={e => this.handleChange(e.target.value)}/>
+                            <div className='track-card'>
+                                <div className="track-card-header" style={{backgroundImage: 'url('+ this.state.track.trackImage +')'}}/>
+                                <div className="track-card-content">
+                                    <h2>{this.state.track.name} </h2>
+                                    <h2>Artist(s):</h2>
+                                    <h2>Popularity:</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                 </div>
             </div>
