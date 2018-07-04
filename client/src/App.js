@@ -17,7 +17,7 @@ class App extends Component {
             params: params,
             moodBgColor: '#9c6e7f',
             /*if access token is true that logged in state*/
-            loggedIn: !!params.access_token,
+            hasToken: !!params.access_token,
             nowPlaying: {
                 trackName: '',
                 artistName: '',
@@ -31,11 +31,7 @@ class App extends Component {
                 email: ''
             },
             demoTab: "listen",
-            track: {
-                name: 'Change',
-                artists: [],
-                trackImage: null
-            }
+            tracks: []
 
         }
         /*if there is access token available then we can set the access token within spotify web api
@@ -77,7 +73,7 @@ class App extends Component {
     }
 
     getNowPlaying() {
-        if(this.state.loggedIn) {
+        if(this.state.hasToken) {
             spotifyWebApi.getMyCurrentPlaybackState()
                 .then((response) => {
                     let isPlayingSomething = response !== ""
@@ -94,11 +90,15 @@ class App extends Component {
     }
 
     goToDemo(demo) {
-        this.setState({
-            demoTab: demo
-        })
-        if (demo === "profile") {
-            this.getUserInformation();
+        if(this.state.hasToken) {
+            this.setState({
+                demoTab: demo
+            })
+            if (demo === "profile") {
+                this.getUserInformation();
+            }
+        } else {
+            alert("Yes, I used a tacky alert.. But please login to push the other buttons")
         }
 
     }
@@ -129,29 +129,29 @@ class App extends Component {
     //
     // }
 
-    handleChange = (query) => {
-        this.searchTrack(query);
-    }
-
-    searchTrack(query) {
-        const q = query
+    searchTrack() {
+        const q = this.refs.startTrackInputRef.value
+        console.log(q);
         let config = {
             headers: {
                 'Authorization': 'Bearer ' + this.getHashParam().access_token
             }
         };
-        axios.get('https://api.spotify.com/v1/search?q='+ q + '&type=track&limit=1',config)
+        axios.get('https://api.spotify.com/v1/search?q='+ q + '&type=track&limit=5',config)
             .then(res => {
-                console.log(res.data.tracks.items[0].name);
+                console.log(res.data.tracks.items);
                 this.setState({
-                    track: {
-                        name: res.data.tracks.items[0].name,
-                        // artists: res.data.tracks.items[0].artists,
-                        trackImage: res.data.tracks.items[0].album.images[0].url
-                    }
+                    tracks: res.data.tracks.items,
+                    //     {
+                    //     name: res.data.tracks.items[0].name,
+                    //     // artists: res.data.tracks.items[0].artists,
+                    //     trackImage: res.data.tracks.items[0].album.images[0].url
+                    // }
                 })
             });
     }
+
+    /*I know I know, this could've all been componentized*/
 
     render() {
         return (
@@ -227,14 +227,20 @@ class App extends Component {
                     <section className={`flex-container search-section ${this.state.demoTab === 'search' ? 'show-demo' : 'hide-demo'}`}>
                         <div className="animated fadeInLeft">
                             <h3 className="text-white">Type a track name</h3>
-                            <input className="search-track-input" onChange={e => this.handleChange(e.target.value)}/>
-                            <div className='track-card'>
-                                <div className="track-card-header" style={{backgroundImage: 'url('+ this.state.track.trackImage +')'}}/>
-                                <div className="track-card-content">
-                                    <h2>{this.state.track.name} </h2>
-                                    <h2>Artist(s):</h2>
-                                    <h2>Popularity:</h2>
-                                </div>
+                            <input className="search-track-input" ref="startTrackInputRef"/>
+                            <button className="tutorial-btn ripple text-white" onClick={() => this.searchTrack()}>Search Track</button>
+                            <div className="track-card-container">
+                                {this.state.tracks.map((track, index) => (
+                                    <div className='track-card animated fadeIn'>
+                                        {/*<div className="track-card-header" />*/}
+                                        <div className="track-card-header" style={{backgroundImage: 'url('+ track.album.images[0].url +')'}}/>
+                                        <div className="track-card-content">
+                                            <h2>Track Name: {track.name}</h2>
+                                            {/*<h2>Artist(s):</h2>*/}
+                                            <h2>Popularity:</h2>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </section>
